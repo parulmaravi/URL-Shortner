@@ -1,4 +1,5 @@
 import ShorturlModel from '../models/shortUrlModel.js';
+import {ConflictError} from '../utils/errorHandler.js'
 
 export const saveShortUrl = async (shortUrl, longUrl, userId)=>{
     try{
@@ -11,10 +12,10 @@ export const saveShortUrl = async (shortUrl, longUrl, userId)=>{
          return newUrl;
     }
     catch(error){
-        console.error("Error saving short URL:", error);
+        throw new ConflictError('Short URL already exists');
     }
 }
 
 export const getShortUrl = async(shortUrl)=>{
-     return await ShorturlModel.findOne({short_url:shortUrl})
+     return await ShorturlModel.findOneAndUpdate({short_url:shortUrl},{$inc:{clicks:1}})
 }
